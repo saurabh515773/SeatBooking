@@ -85,7 +85,7 @@ public class SeatInformationController {
 	}
 	
 	@PostMapping(value = "/booking")
-	public ResponseEntity<ResponseObject> getAllSeats(
+	public ResponseEntity<ResponseObject> seatBooking(
 			@RequestParam(name = "employeeId", required = true) String employeeId,
 			@RequestParam(name = "seatNumber", required = true) String seatNumber,
 			@RequestParam(name = "fromTime", required = true) String fromTime,

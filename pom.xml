@@ -17,7 +17,7 @@
 	<packaging>war</packaging>
 	<properties>
 		<java.version>11</java.version>
-		<tomcat-jdbc.version>7.0.10</tomcat-jdbc.version>
+		<tomcat-jdbc.version>9.0.10</tomcat-jdbc.version>
 		<aws-java-sdk.version>1.11.750</aws-java-sdk.version>
 		<!-- <maven.compiler.source>${java.version}</maven.compiler.source>
 		<maven.compiler.target>${java.version}</maven.compiler.target> -->
