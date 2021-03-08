@@ -115,7 +115,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<mainClass>org.covid.inventory.InventoryApplication</mainClass>
+					<mainClass>com.persistent.deskManagement.DeskManagementApplication</mainClass>
 					<layout>WAR</layout>
 				</configuration>
 				<executions>
