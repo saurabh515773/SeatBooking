@@ -16,6 +16,8 @@
 	<description>DeskManagement project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
+		<tomcat-jdbc.version>7.0.10</tomcat-jdbc.version>
+		<aws-java-sdk.version>1.11.750</aws-java-sdk.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -125,6 +127,14 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
