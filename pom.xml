@@ -14,10 +14,14 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>DeskManagement</name>
 	<description>DeskManagement project for Spring Boot</description>
+	<packaging>war</packaging>
 	<properties>
 		<java.version>11</java.version>
 		<tomcat-jdbc.version>7.0.10</tomcat-jdbc.version>
 		<aws-java-sdk.version>1.11.750</aws-java-sdk.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
+		<start-class>com.persistent.deskManagement.DeskManagementApplication</start-class>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -113,7 +117,7 @@
 					</excludes>
 				</configuration>
 			</plugin>
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
@@ -135,7 +139,7 @@
 					<source>1.8</source>
 					<target>1.8</target>
 				</configuration>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 
