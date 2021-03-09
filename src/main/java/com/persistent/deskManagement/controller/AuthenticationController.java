@@ -33,7 +33,7 @@ public class AuthenticationController {
 	@GetMapping("/welcome")
 	@ResponseBody
 	public String welcome() {
-		return "Welcome to Desk Management Application";
+		return "Welcome to Desk Management Application v2";
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
