@@ -2,6 +2,7 @@ package com.persistent.deskManagement.controller;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,10 +15,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.persistent.deskManagement.entity.Employee;
 import com.persistent.deskManagement.entity.SeatBooking;
 import com.persistent.deskManagement.entity.SeatInformation;
 import com.persistent.deskManagement.model.EnumHelper.CRUDEnum;
@@ -86,7 +89,7 @@ public class SeatInformationController {
 	
 	@PostMapping(value = "/booking")
 	public ResponseEntity<ResponseObject> seatBooking(
-			@RequestParam(name = "employeeId", required = true) String employeeId,
+			@RequestParam(name = "employeeId", required = true) Integer employeeId,
 			@RequestParam(name = "seatNumber", required = true) String seatNumber,
 			@RequestParam(name = "fromTime", required = true) String fromTime,
 			@RequestParam(name = "toTime", required = true) String toTime) throws Exception {
@@ -102,6 +105,22 @@ public class SeatInformationController {
 			
 			Duration duration = Duration.between(from, to);
 			
+			if(from.isBefore(LocalDateTime.now()) || to.isBefore(LocalDateTime.now())) {
+				response.setSuccess(false);
+				response.setStatus(404);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setStatusText("FROM TIME SHOULD BE LESS THAN TO TIME!!");
+				response.setObject(new String());
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
+			}
+			if(from.isAfter(to)) {
+				response.setSuccess(false);
+				response.setStatus(404);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setStatusText("FROM TIME SHOULD BE LESS THAN TO TIME!!");
+				response.setObject(new String());
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
+			}			
 			if(duration.toMinutes()<minTimeInMinutes) {
 				response.setSuccess(false);
 				response.setStatus(404);
@@ -140,6 +159,117 @@ public class SeatInformationController {
 		}catch (Exception e) {
 			e.printStackTrace();
 			response.setObject(new String());
+			response.setStatus(500);
+			response.setSuccess(false);
+			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
+			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@PutMapping(value = "/occupy")
+	public ResponseEntity<ResponseObject> seatOccupied(
+			@RequestParam(name = "bookingId", required = true) String bookingId) throws Exception {
+		
+		LOGGER.info("Web Service called : /occupy");
+		
+		ResponseObject response = new ResponseObject();
+		response.setRequestType(CRUDEnum.UPDATE);
+		
+		try {
+			Optional<SeatBooking> seatBookingOpt = seatBookingService.occupySeat(bookingId);
+			if(seatBookingOpt.isPresent()) {
+				response.setSuccess(true);
+				response.setStatus(200);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setObject(seatBookingOpt.get());
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
+			}else {
+				response.setSuccess(true);
+				response.setStatus(204);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setStatusText("BOOKING NOT FOUND!!");
+				response.setObject(new String());
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			response.setObject(new String());
+			response.setStatus(500);
+			response.setSuccess(false);
+			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
+			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+	
+	@PutMapping(value = "/return")
+	public ResponseEntity<ResponseObject> seatReturn(
+			@RequestParam(name = "bookingId", required = true) String bookingId) throws Exception {
+		
+		LOGGER.info("Web Service called : /return");
+		
+		ResponseObject response = new ResponseObject();
+		response.setRequestType(CRUDEnum.UPDATE);
+		
+		try {
+			Optional<SeatBooking> seatBookingOpt = seatBookingService.returnSeat(bookingId);
+			if(seatBookingOpt.isPresent()) {
+				response.setSuccess(true);
+				response.setStatus(200);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setObject(seatBookingOpt.get());
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
+			}else {
+				response.setSuccess(true);
+				response.setStatus(204);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setStatusText("BOOKING NOT FOUND!!");
+				response.setObject(new String());
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			response.setObject(new String());
+			response.setStatus(500);
+			response.setSuccess(false);
+			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
+			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+	}
+
+	@GetMapping(value = "/allbookedSeat")
+	public ResponseEntity<ResponseObject> getBookedSeats(
+			@RequestParam(name = "fromTime", required = true) String fromTime,
+			@RequestParam(name = "toTime", required = true) String toTime) throws Exception {
+		LOGGER.info("Web Service called : /allbookedSeat");
+
+		ResponseObject response = new ResponseObject();
+		response.setRequestType(CRUDEnum.LIST);
+		
+		try {
+			LocalDateTime from = LocalDateTime.parse(fromTime);
+			LocalDateTime to = LocalDateTime.parse(toTime);
+			
+			ArrayList<String> allBookedSeats = seatBookingService.allBookedSeats(from, to);
+
+			if(!allBookedSeats.isEmpty()) {
+				response.setSuccess(true);
+				response.setStatus(200);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setObject(allBookedSeats);
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
+			}else {
+				response.setSuccess(true);
+				response.setStatus(204);
+				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
+				response.setStatusText("NO SEAT BOOKED FOUND!!");
+				response.setObject("NO SEAT BOOKED FOUND!!");
+				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
+			}
+		}catch (Exception e) {
+			response.setObject(new Employee());
 			response.setStatus(500);
 			response.setSuccess(false);
 			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));

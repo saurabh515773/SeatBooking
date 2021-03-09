@@ -51,7 +51,7 @@ public class AuthenticationController {
 				response.setSuccess(true);
 				response.setStatus(200);
 				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setObject("Logged In Successfully");
+				response.setObject(empObj.get());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}else {
 				response.setSuccess(true);

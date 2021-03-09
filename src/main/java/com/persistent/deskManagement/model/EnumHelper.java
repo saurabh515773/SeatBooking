@@ -15,7 +15,7 @@ public class EnumHelper {
 	}
 	
 	public enum StatusEnum{
-		OCCUPIED, BOOKED
+		OCCUPIED, BOOKED, RETURNED
 	}
 	
 	public enum CRUDEnum {

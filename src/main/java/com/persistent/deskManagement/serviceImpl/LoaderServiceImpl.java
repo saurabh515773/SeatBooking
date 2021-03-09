@@ -26,13 +26,13 @@ public class LoaderServiceImpl implements LoaderService{
 
 	@Autowired
 	EmployeeService employeeService;
-	
+
 	@Autowired
 	FloorPlanService floorPlanService;
-	
+
 	@Autowired
 	SeatInformationService seatInformationService;
-	
+
 	@Override
 	public Boolean loadAllEmployees() {
 		List<Employee> empList = new ArrayList<>();
@@ -48,25 +48,28 @@ public class LoaderServiceImpl implements LoaderService{
 		orgEmpObj.setEmailId("saurabh_awasthi@persistent.com");
 		orgEmpObj.setIsUserLoggedIn(false);
 		orgEmpObj.setPassword("saurabh_awasthi");
-		
+		orgEmpObj.setBaseLocation(CityEnum.PUNE);
+
 		empList.add(orgEmpObj);
 
 		for(int i=0 ;i<9 ;i++) {
-			Employee empObj = new Employee();
-			empObj.setId(faker.random().nextInt(20000, 50000));
-			empObj.setFirstName(faker.name().firstName());
-			empObj.setLastName(faker.name().lastName());
-			empObj.setUsername(empObj.getFirstName().concat("_")
-					.concat(empObj.getLastName()));
-			empObj.setActive(true);
-			empObj.setGender(GenderEnum.MALE);
-			empObj.setMobileNumber(Long.valueOf(faker.random().nextLong(999999999)));
-			empObj.setEmailId(empObj.getFirstName().concat("_")
-					.concat(empObj.getLastName().concat("@persistent.com")));
-			empObj.setIsUserLoggedIn(false);
-			empObj.setPassword(empObj.getUsername());
-			
-			empList.add(empObj);
+			for (CityEnum city : CityEnum.values()) {
+				Employee empObj = new Employee();
+				empObj.setId(faker.random().nextInt(20000, 50000));
+				empObj.setFirstName(faker.name().firstName());
+				empObj.setLastName(faker.name().lastName());
+				empObj.setUsername(empObj.getFirstName().concat("_")
+						.concat(empObj.getLastName()));
+				empObj.setActive(true);
+				empObj.setGender(GenderEnum.MALE);
+				empObj.setMobileNumber(Long.valueOf(faker.random().nextLong(999999999)));
+				empObj.setEmailId(empObj.getFirstName().concat("_")
+						.concat(empObj.getLastName().concat("@persistent.com")));
+				empObj.setIsUserLoggedIn(false);
+				empObj.setPassword(empObj.getUsername());
+				empObj.setBaseLocation(city);
+				empList.add(empObj);
+			}
 		}
 
 		empList = employeeService.insertAll(empList);
@@ -86,7 +89,7 @@ public class LoaderServiceImpl implements LoaderService{
 		OrgFloorPlanObj.setFloorNumber(4);
 		OrgFloorPlanObj.setNoOfCubicle(5);
 		OrgFloorPlanObj.setFloorId("PUNE_SDB1_4");
-		
+
 		floorPlanList.add(OrgFloorPlanObj);
 
 		for(int i=2 ;i<=5 ;i++) {
@@ -99,11 +102,11 @@ public class LoaderServiceImpl implements LoaderService{
 				floorPlanObj.setFloorId(floorPlanObj.getCity().name().concat("_")
 						.concat(floorPlanObj.getBuilding()).concat("_")
 						.concat(String.valueOf(floorPlanObj.getFloorNumber())));
-				
+
 				floorPlanList.add(floorPlanObj);
 			}
 		}
-		
+
 		floorPlanList = floorPlanService.insertAll(floorPlanList);
 		if(floorPlanList.isEmpty()) {
 			return false;
@@ -130,12 +133,12 @@ public class LoaderServiceImpl implements LoaderService{
 			orgSeatInformationObj.setSeatNumber(orgFloorPlanObj.get().getFloorId().concat("_")
 					.concat(orgSeatInformationObj.getCubicleNumber().concat("_")
 							.concat(orgSeatInformationObj.getSeatPosition())));
-			
+
 			seatInformationList.add(orgSeatInformationObj);
 		}else {
 			System.out.println("floorPlanObj is NOT FOUND");
 		}
-				
+
 		for(int i=2 ;i<=35 ;i++) {
 			for(CityEnum city : CityEnum.values()) {
 				SeatInformation seatInformationObj = new SeatInformation();
@@ -154,18 +157,18 @@ public class LoaderServiceImpl implements LoaderService{
 					seatInformationObj.setSeatNumber(seatInformationObj.getFloorDetail().getFloorId().concat("_")
 							.concat(seatInformationObj.getCubicleNumber().concat("_")
 									.concat(seatInformationObj.getSeatPosition())));
-					
+
 					seatInformationList.add(seatInformationObj);
 				}else {
 					System.out.println("floorPlanObj is NOT FOUND");
 				}
-				
+
 				seatInformationList.add(seatInformationObj);
 			}
 		}
-		
+
 		seatInformationList = seatInformationService.insertAll(seatInformationList);
-		
+
 		return true;
 	}
 }

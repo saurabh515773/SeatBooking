@@ -32,7 +32,7 @@ public class SeatBooking implements Serializable{
 	
 	private String seatNumber;//for
 	
-	private String employeeId;//for key
+	private Integer employeeId;//for key
 	
 	private LocalDateTime bookedFrom;
 	
