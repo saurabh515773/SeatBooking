@@ -109,7 +109,7 @@ public class SeatInformationController {
 				response.setSuccess(false);
 				response.setStatus(404);
 				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("FROM TIME SHOULD BE LESS THAN TO TIME!!");
+				response.setStatusText("FROM TIME AND TO TIME SHOULD BE GREATER THAN TO CURRENT TIME!!");
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
 			}

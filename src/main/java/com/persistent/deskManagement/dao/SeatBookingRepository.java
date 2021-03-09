@@ -13,26 +13,17 @@ import com.persistent.deskManagement.entity.SeatBooking;
 @Repository
 public interface SeatBookingRepository extends JpaRepository<SeatBooking, String> {
 
-	@Query("SELECT s FROM SeatBooking s "
-			+ "WHERE s.seatNumber = ?1 "
-			+ "AND "
-			+ "s.bookedFrom BETWEEN ?2 and ?3 "
-			+ "OR "
-			+ "s.bookedTo BETWEEN ?2 and ?3")
-	Optional<SeatBooking> findSeatAvailability(String seatNumber, LocalDateTime bookedFrom, LocalDateTime bookedTo);
+	@Query("SELECT s FROM SeatBooking s WHERE s.seatNumber = ?1 AND ?2 BETWEEN s.bookedFrom and s.bookedTo OR ?3 BETWEEN s.bookedFrom and s.bookedTo")
+	Optional<List<SeatBooking>> findSeatAvailability(String seatNumber, LocalDateTime bookedFrom, LocalDateTime bookedTo);
 	
-	@Query("SELECT s FROM SeatBooking s "
-			+ "WHERE s.employeeId = ?1 "
-			+ "AND "
-			+ "s.bookedFrom BETWEEN ?2 and ?3 "
-			+ "OR "
-			+ "s.bookedTo BETWEEN ?2 and ?3")
+	@Query("SELECT s FROM SeatBooking s WHERE s.employeeId = ?1 AND ?2 BETWEEN s.bookedFrom and s.bookedTo OR ?3 BETWEEN s.bookedFrom and s.bookedTo")
 	Optional<List<SeatBooking>> findAllEmployeeBookedSeats(Integer employeeId, LocalDateTime bookedFrom, LocalDateTime bookedTo);
 	
-	@Query("SELECT s FROM SeatBooking s "
-			+ "WHERE s.bookedFrom BETWEEN ?1 and ?2 "
-			+ "OR "
-			+ "s.bookedTo BETWEEN ?1 and ?2")
+//	@Query("SELECT s FROM SeatBooking s "
+//			+ "WHERE s.bookedFrom BETWEEN ?1 and ?2 "
+//			+ "OR "
+//			+ "s.bookedTo BETWEEN ?1 and ?2")
+	@Query("SELECT s FROM SeatBooking s WHERE ?2 BETWEEN s.bookedFrom and s.bookedTo OR ?3 BETWEEN s.bookedFrom and s.bookedTo")
 	Optional<List<SeatBooking>> findAllBookedSeats(LocalDateTime bookedFrom, LocalDateTime bookedTo);
 
 }

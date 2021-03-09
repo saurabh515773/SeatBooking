@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,8 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	@Override
 	public Boolean findSeatAvailability(String seatNumber, LocalDateTime bookedFrom, LocalDateTime bookedTo) {
 
-		Optional<SeatBooking> seat = seatBookingRepository.findSeatAvailability(seatNumber, bookedFrom, bookedTo);
-		if(seat.isPresent()) {
+		Optional<List<SeatBooking>> seat = seatBookingRepository.findSeatAvailability(seatNumber, bookedFrom, bookedTo);
+		if(seat.isPresent() && !seat.get().isEmpty()) {
 			return false;
 		}
 		return true;
@@ -32,7 +33,9 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	@Override
 	public SeatBooking seatBooking(String seatNumber, LocalDateTime bookedFrom, LocalDateTime bookedTo, Integer employeeId) {
 		SeatBooking seatBookingObj = new SeatBooking();
-		seatBookingObj.setBookingId("1");
+		Random random = new Random();
+		int rand_int1 = random.nextInt(999999);
+		seatBookingObj.setBookingId("BNG".concat(String.valueOf(employeeId)).concat("-").concat(String.valueOf(rand_int1)));
 		seatBookingObj.setSeatNumber(seatNumber);
 		seatBookingObj.setStatus(StatusEnum.BOOKED);
 		seatBookingObj.setBookedFrom(bookedFrom);

@@ -5,8 +5,9 @@ import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.persistent.deskManagement.model.EnumHelper.StatusEnum;
@@ -28,6 +29,8 @@ public class SeatBooking implements Serializable{
 	private static final long serialVersionUID = 4073748523161327425L;
 	
 	@Id
+//	@GeneratedValue(generator = "uuid")
+//	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	private String bookingId;
 	
 	private String seatNumber;//for
