@@ -35,7 +35,7 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		SeatBooking seatBookingObj = new SeatBooking();
 		Random random = new Random();
 		int rand_int1 = random.nextInt(999999);
-		seatBookingObj.setBookingId("BNG".concat(String.valueOf(employeeId)).concat("-").concat(String.valueOf(rand_int1)));
+		seatBookingObj.setBookingId("BKG".concat(String.valueOf(employeeId)).concat("-").concat(String.valueOf(rand_int1)));
 		seatBookingObj.setSeatNumber(seatNumber);
 		seatBookingObj.setStatus(StatusEnum.BOOKED);
 		seatBookingObj.setBookedFrom(bookedFrom);
