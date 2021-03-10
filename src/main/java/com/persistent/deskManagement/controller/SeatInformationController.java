@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.persistent.deskManagement.entity.Employee;
 import com.persistent.deskManagement.entity.SeatBooking;
@@ -33,6 +34,7 @@ import com.persistent.deskManagement.service.SeatInformationService;
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/seat")
+@RestControllerAdvice
 public class SeatInformationController {
 
 	@Value("${spring.deskmanagement.minTime}")

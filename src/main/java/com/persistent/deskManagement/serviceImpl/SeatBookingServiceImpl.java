@@ -47,9 +47,9 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	}
 
 	@Override
-	public Optional<List<SeatBooking>> allEmployeeBookedSeats(Integer employeeId, LocalDateTime bookedFrom, LocalDateTime bookedTo) {
+	public Optional<List<SeatBooking>> allEmployeeBookedSeats(Integer employeeId) {
 
-		Optional<List<SeatBooking>> bookedSeatList = seatBookingRepository.findAllEmployeeBookedSeats(employeeId, bookedFrom, bookedTo);
+		Optional<List<SeatBooking>> bookedSeatList = seatBookingRepository.findAllEmployeeBookedSeats(employeeId);
 		if(bookedSeatList.isPresent() && !bookedSeatList.get().isEmpty()) {
 			return bookedSeatList;
 		}

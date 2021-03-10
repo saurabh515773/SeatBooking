@@ -14,7 +14,7 @@ public interface SeatBookingService {
 	
 	public SeatBooking seatBooking(String seatNumber, LocalDateTime bookedFrom , LocalDateTime bookedTo, Integer employeeId);
 	
-	public Optional<List<SeatBooking>> allEmployeeBookedSeats(Integer employeeId, LocalDateTime bookedFrom , LocalDateTime bookedTo);
+	public Optional<List<SeatBooking>> allEmployeeBookedSeats(Integer employeeId);
 	
 	public ArrayList<String> allBookedSeats(LocalDateTime bookedFrom , LocalDateTime bookedTo);
 	

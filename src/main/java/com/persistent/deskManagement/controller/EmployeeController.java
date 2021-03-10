@@ -88,9 +88,7 @@ public class EmployeeController {
 	
 	@GetMapping(value = "/myAllbookings")
 	public ResponseEntity<ResponseObject> getAllBookings(
-			@RequestParam(name = "employeeId", required = true) Integer employeeId,
-			@RequestParam(name = "fromTime", required = true) String fromTime,
-			@RequestParam(name = "toTime", required = true) String toTime) throws Exception {
+			@RequestParam(name = "employeeId", required = true) Integer employeeId) throws Exception {
 		
 		LOGGER.info("Web Service called : /myAllbookings");
 
@@ -98,10 +96,8 @@ public class EmployeeController {
 		response.setRequestType(CRUDEnum.LIST);
 		
 		try {
-			LocalDateTime from = LocalDateTime.parse(fromTime);
-			LocalDateTime to = LocalDateTime.parse(toTime);
 			
-			Optional<List<SeatBooking>> allBookedSeats = seatBookingService.allEmployeeBookedSeats(employeeId, from, to);
+			Optional<List<SeatBooking>> allBookedSeats = seatBookingService.allEmployeeBookedSeats(employeeId);
 
 			if(allBookedSeats.isPresent()) {
 				response.setSuccess(true);
