@@ -89,7 +89,12 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		Optional<List<SeatBooking>> bookedSeatList = seatBookingRepository.findAllBookedSeats(bookedFrom, bookedTo);
 		if(bookedSeatList.isPresent() && !bookedSeatList.get().isEmpty()) {
 			for (SeatBooking seatBooking : bookedSeatList.get()) {
-				allBookedSeats.add(seatBooking.getSeatNumber());
+				if(seatBooking.getStatus().equals(StatusEnum.BOOKED) ||
+						seatBooking.getStatus().equals(StatusEnum.OCCUPIED)) {
+					if(!allBookedSeats.contains(seatBooking.getSeatNumber())) {
+						allBookedSeats.add(seatBooking.getSeatNumber());
+					}
+				}
 			}
 		}
 		return allBookedSeats;
