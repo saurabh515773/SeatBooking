@@ -24,7 +24,11 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	public Boolean findSeatAvailability(String seatNumber, LocalDateTime bookedFrom, LocalDateTime bookedTo) {
 
 		Optional<List<SeatBooking>> seat = seatBookingRepository.findSeatAvailability(seatNumber, bookedFrom, bookedTo);
+		
 		if(seat.isPresent() && !seat.get().isEmpty()) {
+//			for (SeatBooking iterable_element : seat.get()) {
+//				System.out.println("seat number = "+iterable_element.getSeatNumber() +" from "+iterable_element.getBookedFrom()+" to "+iterable_element.getBookedTo());
+//			}
 			return false;
 		}
 		return true;
