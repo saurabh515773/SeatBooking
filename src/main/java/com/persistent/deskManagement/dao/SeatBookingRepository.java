@@ -23,7 +23,7 @@ public interface SeatBookingRepository extends JpaRepository<SeatBooking, String
 //			+ "WHERE s.bookedFrom BETWEEN ?1 and ?2 "
 //			+ "OR "
 //			+ "s.bookedTo BETWEEN ?1 and ?2")
-	@Query("SELECT s FROM SeatBooking s WHERE ?2 BETWEEN s.bookedFrom and s.bookedTo OR ?3 BETWEEN s.bookedFrom and s.bookedTo")
+	@Query("SELECT s FROM SeatBooking s WHERE ?1 BETWEEN s.bookedFrom and s.bookedTo OR ?2 BETWEEN s.bookedFrom and s.bookedTo")
 	Optional<List<SeatBooking>> findAllBookedSeats(LocalDateTime bookedFrom, LocalDateTime bookedTo);
 
 }
