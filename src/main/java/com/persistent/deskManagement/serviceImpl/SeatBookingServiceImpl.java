@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.persistent.deskManagement.dao.SeatBookingRepository;
 import com.persistent.deskManagement.entity.SeatBooking;
+import com.persistent.deskManagement.exception.SeatNotFoundException;
 import com.persistent.deskManagement.model.EnumHelper.StatusEnum;
 import com.persistent.deskManagement.service.SeatBookingService;
 
@@ -26,9 +27,6 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 		Optional<List<SeatBooking>> seat = seatBookingRepository.findSeatAvailability(seatNumber, bookedFrom, bookedTo);
 		
 		if(seat.isPresent() && !seat.get().isEmpty()) {
-//			for (SeatBooking iterable_element : seat.get()) {
-//				System.out.println("seat number = "+iterable_element.getSeatNumber() +" from "+iterable_element.getBookedFrom()+" to "+iterable_element.getBookedTo());
-//			}
 			return false;
 		}
 		return true;
@@ -53,11 +51,15 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 	@Override
 	public Optional<List<SeatBooking>> allEmployeeBookedSeats(Integer employeeId) {
 
-		Optional<List<SeatBooking>> bookedSeatList = seatBookingRepository.findAllEmployeeBookedSeats(employeeId);
+		Optional<List<SeatBooking>> bookedSeatList = Optional.ofNullable(seatBookingRepository.
+				findAllEmployeeBookedSeats(employeeId)
+				.orElseThrow(() -> new SeatNotFoundException(employeeId)));
+		
 		if(bookedSeatList.isPresent() && !bookedSeatList.get().isEmpty()) {
 			return bookedSeatList;
 		}
-		return Optional.empty();
+		throw new SeatNotFoundException(employeeId);
+		//return Optional.empty();
 	}
 
 	@Override

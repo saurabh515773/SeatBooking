@@ -1,7 +1,5 @@
 package com.persistent.deskManagement.controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.persistent.deskManagement.entity.Employee;
 import com.persistent.deskManagement.entity.SeatBooking;
+import com.persistent.deskManagement.exception.ApiRequestException;
+import com.persistent.deskManagement.exception.EmployeeNotFoundException;
 import com.persistent.deskManagement.model.EnumHelper.CRUDEnum;
 import com.persistent.deskManagement.model.EnumHelper.ResponseStatusEnum;
 import com.persistent.deskManagement.model.RequestObject;
@@ -38,7 +39,7 @@ public class EmployeeController {
 
 	@Autowired
 	EmployeeService employeeService;
-	
+
 	@Autowired
 	SeatBookingService seatBookingService;
 
@@ -54,12 +55,13 @@ public class EmployeeController {
 
 	@GetMapping(value = "/inq")
 	public ResponseEntity<ResponseObject> retrieveUser(@PathVariable @Min(1) int empId) throws Exception {
-		LOGGER.info("Web Service called : /register");
-
-		ResponseObject response = new ResponseObject();
-		response.setRequestType(CRUDEnum.QUERY);
-		
 		try {
+			LOGGER.info("Web Service called : /register");
+
+			ResponseObject response = new ResponseObject();
+			response.setRequestType(CRUDEnum.QUERY);
+
+
 			Optional<Employee> employeeObj = employeeService.getEmployeeById(empId);
 
 			if(employeeObj.isPresent()) {
@@ -69,57 +71,44 @@ public class EmployeeController {
 				response.setObject(employeeObj);
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}else {
-				response.setSuccess(true);
-				response.setStatus(204);
-				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("NO EMPLOYEE FOUND!!");
-				response.setObject(employeeObj);
-				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
+				throw new EmployeeNotFoundException(empId);
 			}
-		}catch (Exception e) {
-			response.setObject(new Employee());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
-		
-	}
-	
-	@GetMapping(value = "/myAllbookings")
-	public ResponseEntity<ResponseObject> getAllBookings(
-			@RequestParam(name = "employeeId", required = true) Integer employeeId) throws Exception {
-		
-		LOGGER.info("Web Service called : /myAllbookings");
 
-		ResponseObject response = new ResponseObject();
-		response.setRequestType(CRUDEnum.LIST);
+	}
+
+	@GetMapping(value = "/myAllbookings")
+	@ExceptionHandler(ApiRequestException.class)
+	public ResponseEntity<ResponseObject> getAllBookings(
+			@RequestParam(name = "employeeId", required = true ) Integer employeeId) throws Exception {
 		
+		ResponseObject response = new ResponseObject();
 		try {
-			
+			LOGGER.info("Web Service called : /myAllbookings");
+
+			response.setRequestType(CRUDEnum.LIST);
+
 			Optional<List<SeatBooking>> allBookedSeats = seatBookingService.allEmployeeBookedSeats(employeeId);
 
 			if(allBookedSeats.isPresent()) {
 				response.setSuccess(true);
-				response.setStatus(200);
+				response.setStatus(HttpStatus.OK.value());
 				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
 				response.setObject(allBookedSeats.get());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}else {
 				response.setSuccess(true);
-				response.setStatus(204);
+				response.setStatus(HttpStatus.NO_CONTENT.value());
 				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("NO SEAT BOOKED FOUND!!");
-				response.setObject("NO SEAT BOOKED FOUND!!");
+				response.setStatusText("NO BOOKED SEAT FOUND!!");
+				response.setObject("NO BOOKED SEAT FOUND!!");
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
 			}
-		}catch (Exception e) {
-			response.setObject(new Employee());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
 		
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
+		}
 	}
 }

@@ -3,8 +3,6 @@ package com.persistent.deskManagement.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.constraints.Min;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +10,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.persistent.deskManagement.exception.ApiRequestException;
 import com.persistent.deskManagement.model.EnumHelper.CRUDEnum;
 import com.persistent.deskManagement.model.EnumHelper.CityEnum;
 import com.persistent.deskManagement.model.EnumHelper.ResponseStatusEnum;
@@ -58,12 +56,8 @@ public class FloorPlanController {
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
 			}
-		}catch (Exception e) {
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}
@@ -95,12 +89,8 @@ public class FloorPlanController {
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
 			}
-		}catch (Exception e) {
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}

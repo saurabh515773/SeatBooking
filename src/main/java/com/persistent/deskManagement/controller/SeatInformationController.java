@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.persistent.deskManagement.entity.Employee;
 import com.persistent.deskManagement.entity.SeatBooking;
 import com.persistent.deskManagement.entity.SeatInformation;
+import com.persistent.deskManagement.exception.ApiRequestException;
 import com.persistent.deskManagement.model.EnumHelper.CRUDEnum;
 import com.persistent.deskManagement.model.EnumHelper.CityEnum;
 import com.persistent.deskManagement.model.EnumHelper.ResponseStatusEnum;
@@ -34,7 +35,6 @@ import com.persistent.deskManagement.service.SeatInformationService;
 @RestController
 @CrossOrigin("*")
 @RequestMapping(value = "/api/seat")
-@RestControllerAdvice
 public class SeatInformationController {
 
 	@Value("${spring.deskmanagement.minTime}")
@@ -79,12 +79,8 @@ public class SeatInformationController {
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
 			}
-		}catch (Exception e) {
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}
@@ -108,36 +104,16 @@ public class SeatInformationController {
 			Duration duration = Duration.between(from, to);
 			
 			if(from.isBefore(LocalDateTime.now()) || to.isBefore(LocalDateTime.now())) {
-				response.setSuccess(false);
-				response.setStatus(404);
-				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("FROM TIME AND TO TIME SHOULD BE GREATER THAN TO CURRENT TIME!!");
-				response.setObject(new String());
-				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
+				throw new ApiRequestException("FROM TIME AND TO TIME SHOULD BE GREATER THAN TO CURRENT TIME!!");
 			}
 			if(from.isAfter(to)) {
-				response.setSuccess(false);
-				response.setStatus(404);
-				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("FROM TIME SHOULD BE LESS THAN TO TIME!!");
-				response.setObject(new String());
-				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
-			}			
+				throw new ApiRequestException("FROM TIME SHOULD BE LESS THAN TO TIME!!");
+			}
 			if(duration.toMinutes()<minTimeInMinutes) {
-				response.setSuccess(false);
-				response.setStatus(404);
-				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("BOOKING DURATION CANNOT BE LESS THAN 1 HOURS!!");
-				response.setObject(new String());
-				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
+				throw new ApiRequestException("BOOKING DURATION CANNOT BE LESS THAN "+minTimeInMinutes+" HOURS!!");
 			}
 			if(duration.toMinutes()>maxTimeInMinutes) {
-				response.setSuccess(false);
-				response.setStatus(404);
-				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("BOOKING DURATION CANNOT BE MORE THAN 9 HOURS!!");
-				response.setObject(new String());
-				return new ResponseEntity<ResponseObject>(response, HttpStatus.BAD_REQUEST);
+				throw new ApiRequestException("BOOKING DURATION CANNOT BE MORE THAN "+maxTimeInMinutes+" HOURS!!");
 			}
 			
 			Boolean isSeatAvailable = seatBookingService.findSeatAvailability(seatNumber,
@@ -158,13 +134,8 @@ public class SeatInformationController {
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}
@@ -194,13 +165,8 @@ public class SeatInformationController {
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}
@@ -230,13 +196,8 @@ public class SeatInformationController {
 				response.setObject(new String());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}
-		}catch (Exception e) {
-			e.printStackTrace();
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}
@@ -270,12 +231,8 @@ public class SeatInformationController {
 				response.setObject("NO SEAT BOOKED FOUND!!");
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
 			}
-		}catch (Exception e) {
-			response.setObject(new Employee());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 		
 	}

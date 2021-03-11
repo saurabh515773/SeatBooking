@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.persistent.deskManagement.entity.Employee;
+import com.persistent.deskManagement.exception.ApiRequestException;
+import com.persistent.deskManagement.exception.EmployeeNotFoundException;
 import com.persistent.deskManagement.model.EnumHelper.CRUDEnum;
 import com.persistent.deskManagement.model.EnumHelper.ResponseStatusEnum;
 import com.persistent.deskManagement.model.ResponseObject;
@@ -32,8 +34,9 @@ public class AuthenticationController {
 
 	@GetMapping("/welcome")
 	@ResponseBody
-	public String welcome() {
-		return "Welcome to Desk Management Application v2";
+	public ResponseEntity<String> welcome() {
+		String response = "Welcome to Desk Management Application v2";
+		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -54,19 +57,10 @@ public class AuthenticationController {
 				response.setObject(empObj.get());
 				return new ResponseEntity<ResponseObject>(response, HttpStatus.OK);
 			}else {
-				response.setSuccess(true);
-				response.setStatus(204);
-				response.setStatusText(ResponseStatusEnum.SUCCESS.name());
-				response.setStatusText("EMPLOYEE NOT FOUND!!");
-				response.setObject(new String());
-				return new ResponseEntity<ResponseObject>(response, HttpStatus.NO_CONTENT);
+				throw new EmployeeNotFoundException(employeeId);
 			}
-		}catch (Exception e) {
-			response.setObject(new String());
-			response.setStatus(500);
-			response.setSuccess(false);
-			response.setStatusText(ResponseStatusEnum.FAILURE.name().concat(" -> ").concat(e.getMessage()));
-			return new ResponseEntity<ResponseObject>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}catch (ApiRequestException e) {
+			throw new ApiRequestException(e.getMessage());
 		}
 	}
 }

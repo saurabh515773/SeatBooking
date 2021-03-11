@@ -13,7 +13,7 @@ import com.persistent.deskManagement.entity.SeatBooking;
 @Repository
 public interface SeatBookingRepository extends JpaRepository<SeatBooking, String> {
 
-	@Query("SELECT s FROM SeatBooking s WHERE (s.seatNumber = ?1) AND (?2 BETWEEN s.bookedFrom and s.bookedTo OR ?3 BETWEEN s.bookedFrom and s.bookedTo)")
+	@Query("SELECT s FROM SeatBooking s WHERE (s.seatNumber = ?1) AND (?2 BETWEEN s.bookedFrom and s.bookedTo OR ?3 BETWEEN s.bookedFrom and s.bookedTo) AND (s.status IN ('0','1'))")
 	Optional<List<SeatBooking>> findSeatAvailability(String seatNumber, LocalDateTime bookedFrom, LocalDateTime bookedTo);
 	
 	@Query("SELECT s FROM SeatBooking s WHERE s.employeeId = ?1 order by s.bookedFrom")
