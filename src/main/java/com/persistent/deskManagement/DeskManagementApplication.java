@@ -12,8 +12,6 @@ public class DeskManagementApplication extends SpringBootServletInitializer{
 	
 	public static void main(String[] args) {
 		SpringApplication.run(DeskManagementApplication.class, args);
-		
-		System.out.println("hello saurabh");
 	}
 	
 	@Override
