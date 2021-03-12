@@ -110,10 +110,10 @@ public class SeatInformationController {
 				throw new ApiRequestException("FROM TIME SHOULD BE LESS THAN TO TIME!!");
 			}
 			if(duration.toMinutes()<minTimeInMinutes) {
-				throw new ApiRequestException("BOOKING DURATION CANNOT BE LESS THAN "+minTimeInMinutes+" HOURS!!");
+				throw new ApiRequestException("BOOKING DURATION CANNOT BE LESS THAN "+minTimeInMinutes/60+" HOURS!!");
 			}
 			if(duration.toMinutes()>maxTimeInMinutes) {
-				throw new ApiRequestException("BOOKING DURATION CANNOT BE MORE THAN "+maxTimeInMinutes+" HOURS!!");
+				throw new ApiRequestException("BOOKING DURATION CANNOT BE MORE THAN "+maxTimeInMinutes/60+" HOURS!!");
 			}
 			
 			Boolean isSeatAvailable = seatBookingService.findSeatAvailability(seatNumber,

@@ -56,10 +56,20 @@ public class SeatBookingServiceImpl implements SeatBookingService {
 				.orElseThrow(() -> new SeatNotFoundException(employeeId)));
 		
 		if(bookedSeatList.isPresent() && !bookedSeatList.get().isEmpty()) {
+			this.seatReturnedDueToTimeElapsed(bookedSeatList.get());
 			return bookedSeatList;
 		}
 		throw new SeatNotFoundException(employeeId);
-		//return Optional.empty();
+	}
+	
+	protected void seatReturnedDueToTimeElapsed(List<SeatBooking> allBookedSeats) {
+		for (SeatBooking seatBooking : allBookedSeats) {
+			if(LocalDateTime.now().isAfter(seatBooking.getBookedTo())) {
+				seatBooking.setStatus(StatusEnum.RETURNED);
+				seatBooking.setIsTimeElapsed(true);
+				seatBooking = seatBookingRepository.save(seatBooking);
+			}
+		}
 	}
 
 	@Override
