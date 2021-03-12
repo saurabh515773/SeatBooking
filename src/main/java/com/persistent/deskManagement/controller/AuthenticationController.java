@@ -35,7 +35,7 @@ public class AuthenticationController {
 	@GetMapping("/welcome")
 	@ResponseBody
 	public ResponseEntity<String> welcome() {
-		String response = "Welcome to Desk Management Application ";
+		String response = "Welcome to Desk Management Application";
 		return new ResponseEntity<String>(response, HttpStatus.OK);
 	}
 
